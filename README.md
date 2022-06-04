@@ -1,350 +1,62 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--
- * This Source Code Form is subject to the terms of the Mozilla Public License,
- * v. 2.0. If a copy of the MPL was not distributed with this file, You can
- * obtain one at http://mozilla.org/MPL/2.0/
- *
- * Copyright (C) 2013-2014, Peter Johnson (www.delphidabbler.com).
- *
- * Read-me file for Fractions unit
--->
-<html lang="en">
+﻿# Fractions Unit
 
-<head>
+## Description
 
-  <meta charset="UTF-8" />
+The `DelphiDabbler.Lib.Fractions.pas` unit provides a single "Advanced" record, _TFraction_ that encapsulates a fraction and a number of operations on it.
 
-  <title>
-    DelphiDabbler Fractions Unit ReadMe
-  </title>
+A whole bunch of operator overloads make it straightforward to perform all the usual arithmetic operations on a fraction and to cast a _TFraction_ to and from an integer or floating point value.
 
-  <style type="text/css">
-    body {
-      margin: 1em;
-      padding: 0;
-      font-family: Verdana, Arial, sans-serif;
-      font-size: 9pt;
-      line-height: 150%;
-    }
-    h1 {
-      margin: 0 0 1em 0;
-      padding: 0.5em;
-      border: 1px silver solid;
-      background-color: #eee;
-      font-size: 13pt;
-      font-weight: bold;
-      text-align: center;
-    }
-    h1 .subtitle {
-      font-style: italic;
-      color: #336;
-    }
-    h2 {
-      margin: 1em 0 0 0;
-      padding: 0;
-      padding-bottom: 6px;
-      border-bottom: 1px silver solid;
-      font-size: 11pt;
-      font-weight: bold;
-    }
-    h3 {
-      margin: 0.5em 0 0 0;
-      padding: 0;
-      font-size: 9pt;
-      font-weight: bold;
-    }
-    p {
-      margin: 0.5em 0 0 0;
-      padding: 0;
-    }
-    ul, ol {
-      margin: 0.5em 0 0 3em;
-      padding: 0;
-    }
-    ul {
-      list-style-type: square;
-    }
-    ul.spaced li,
-    ol.spaced li {
-      margin-top: 0.5em;
-    }
-    ul.spaced li,
-    ol.spaced li {
-      margin-top: 0.5em;
-    }
-    ul.unspaced li,
-    ol.unspaced li {
-      margin-top: 0;
-    }
-    ul.unspaced li.first,
-    ol.unspaced li.first {
-      margin-top: 0.5em;
-    }
-    code {
-      font-family: "Courier New", Courier, monospace;
-    }
-    a:link {
-      color: #336;
-      text-decoration: underline;
-    }
-    a:visited {
-      color: #669;
-      text-decoration: underline;
-    }
-    a:active {
-      color: #336;
-      text-decoration: underline;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .pullout {
-      border-left: 8px silver solid;
-      background-color: #eee;
-      margin: 0.5em 0 0 0;
-      padding: 0.25em 0.5em;
-      font-style: italic;
-    }
-    .indent {
-      margin-left: 3em;
-    }
-    .highlight {
-      color: #336;
-      font-style: italic;
-      font-weight: bold;
-    }
-    .endnotes {
-      margin: 1.5em 0 0 0;
-      padding: 1em 0 0 0;
-      border-top: 1px silver solid;
-    }
-    .comments {
-      font-style: italic;
-    }
-    .copyright,
-    .copyright a:link,
-    .copyright a:visited,
-    .copyright a:active {
-      margin: 1em 0 0 0;
-      color: gray;
-      font-size: 8pt;
-      text-align: right;
-    }
-    .smallcaps {
-      font-variant: small-caps;
-    }
-  </style>
+For full details of methods and operator overloads see the comprehensive [online documentation](https://delphidabbler.com/url/fractions-docs). There is no help file.
 
-</head>
+_DUnit_ tests for _TFraction_ are included in the download.
 
-<body>
+## Compatibility
 
+This unit requires Delphi 2009 as a minimum and has been tested on all 32 bit Windows compilers from Delphi 2009 to Delphi XE4 and 64 bit Windows compilers from Delphi XE2 to XE4.
 
-<h1>
-  Fractions Unit<br />
-  <span class="subtitle">ReadMe</span>
-</h1>
+## Installation
 
+The _Fractions_ Unit, documentation and test suite are supplied in a zip file. Before installing you need to extract all the files from the zip file, preserving the directory structure. The following files will be extracted:
 
-<h2 id="description">
-  Description
-</h2>
+* **`DelphiDabbler.Lib.Fractions.pas`** – Main source code.
+* `README.md` – The unit's read-me file.
+* `MPL-2.txt` – Mozilla Public License v2.0.
+* `CHANGELOG.md` – The project's change log.
+* `Documentation.URL` – Short-cut to the online documentation.
 
-<p>
-  The <code>DelphiDabbler.Lib.Fractions.pas</code> unit provides a single
-  &quot;Advanced;&quot; record, <var>TFraction</var> that encapsulates a
-  fraction and a number of operations on it.
-</p>
+In addition to the above files you will find the _DUnit_ tests in the `Test` sub-directory.
 
-<p>
-  A whole bunch of operator overloads make it straightforward to perform all the
-  usual arithmetic operations on a fraction and to cast a <var>TFraction</var>
-  to a from an integer or floating point value.
-</p>
+There are four possible ways to use the unit.
 
-<p>
-  For full details of methods and operator overloads see the comprehensive <a
-    href="http://www.delphidabbler.com/url/fractions-docs"
-  >online documentation</a>. There is no help file.
-</p>
+1. The simplest way is to add `DelphiDabbler.Lib.Fractions.pas` to your projects as you need it.
+2. To make the unit easier to re-use you can either copy it to a folder on your Delphi search path, or add the folder containing the unit to the Delphi Search path. You then simply use the unit as required without needing to add it to your project.
+3. For maximum portability you can add the unit to a Delphi package. If you need help doing this [see here](https://delphidabbler.com/url/install-comp).
+4. If you use Git you can add the [`ddablib/fractions`](https://github.com/ddablib/fractions) GitHub repository as a Git submodule and add it to your project. Obviously, it's safer if you fork the repo and use your copy, just in case `ddablib/fractions` ever goes away.
 
-<p>
-  <em>DUnit</em> tests for <var>TFraction</var> are included in the download.
-</p>
+## Update History
 
+A complete change log is provided in [`CHANGELOG.md`](https://github.com/ddablib/fractions/blob/main/CHANGELOG.md) that is included in the download.
 
-<h2 id="compatibility">
-  Compatibility
-</h2>
+## License
 
-<p>
-  This unit requires Delphi 2009 as a minimum and has been tested on all
-  32 bit Windows compilers from Delphi 2009 to Delphi XE4 and 64 bit Windows
-  compilers from Delphi XE2 to XE4.
-</p>
+The _Fractions Unit_ (`DelphiDabbler.Lib.Fractions.pas`) is released under the terms of the [Mozilla Public License v2.0](https://www.mozilla.org/MPL/2.0/).
 
+All relevant trademarks are acknowledged.
 
-<h2 id="installation">
-  Installation
-</h2>
+## Acknowledgements
 
-<p>
-  The Fractions Unit, documentation and test suite are supplied in a zip file.
-  Before installing you need to extract all the files from the zip file,
-  preserving the directory structure. The following files will be extracted:
-</p>
+* The information on fractions in the Mathematics Help Facility at [https://mathleague.com/](https://mathleague.com/) was useful in writing this code.
+* The GCD and LCM routines were taken from a UseNet post by Hans van Kruijssen that I found on the now defunct EFG site.
+* The DecimalToFraction routine was adapted from the Turbo Pascal code presented in "Algorithm To Convert A Decimal To A Fraction" by John Kennedy, Mathematics Department, Santa Monica College, USA.
 
-<ul>
-  <li>
-    <code><strong>DelphiDabbler.Lib.Fractions.pas</strong></code> &ndash; Main
-    source code.
-  </li>
-  <li>
-    <code>ReadMe.htm</code> &ndash; The unit's read-me file.
-  </li>
-  <li>
-    <code>MPL-2.txt</code> &ndash; Mozilla Public License v2.0.
-  </li>
-  <li>
-    <code>ChangeLog.txt</code> &ndash; The project's change log.
-  </li>
-  <li>
-    <code>Documentation.URL</code> &ndash; Short-cut to the online
-    documentation.
-  </li>
-</ul>
+## Bugs and Feature Requests
 
-<p>
-  In addition to the above files you will find the <em>DUnit</em> tests in the
-  <code>Test</code> sub-directory.
-</p>
+Bugs can be reported or new features requested via the project's [Issue Tracker](https://github.com/ddablib/fractions/issues). A GitHub account is required.
 
-<p>
-  There are three possible ways to use the unit.
-</p>
+Please check if an issue has already been created for a similar report or request. If so then please add a comment containing as much information as you can to the existing issue, or if you've nothing to add, just add a :+1: (`:+1:`) comment. If there is no suitable existing issue then please add a new issue and give as much information as possible.
 
-<ol class="spaced">
-  <li>
-    The simplest way is to add <code>DelphiDabbler.Lib.Fractions.pas</code> to
-    your projects as you need it.
-  </li>
-  <li>
-    To make the unit easier to re-use you can either copy it to a folder on your
-    Delphi search path, or add the folder containing the unit to the Delphi
-    Search path. You then simply use the unit as required without needing to add
-    it to your project.
-  </li>
-  <li>
-    For maximum portability you can add the unit to a Delphi package. If you
-    need help doing this <a
-      href="http://www.delphidabbler.com/url/install-comp"
-    >see here</a>.
-  </li>
-</ol>
+## About the Author
 
+I'm Peter Johnson – a hobbyist programmer living in Ceredigion in West Wales, UK, writing mainly in Delphi. My programs and other library code are available from: [https://delphidabbler.com/](https://delphidabbler.com/).
 
-<h2 id="update">
-  Update History
-</h2>
-
-<p>
-   A complete change log is provided in the file <code>ChangeLog.txt</code>.
-</p>
-
-
-<h2 id="license">
-  License
-</h2>
-
-<p>
-  The <em>Fractions Unit</em> (<code>DelphiDabbler.Lib.Fractions.pas</code>) is
-  released under the terms of the <a
-    href="http://www.mozilla.org/MPL/2.0/"
-  >Mozilla Public License v2.0</a>.
-</p>
-
-<p>
-  All relevant trademarks are acknowledged.
-</p>
-
-
-<h2>
-  Acknowledgements
-</h2>
-
-<ul class="spaced">
-  <li>
-    The information on fractions in the Mathematics Help Facility at <a
-      href="http://www.themathleague.com/"
-    >http://www.themathleague.com/</a> was useful in writing this code.
-  </li>
-  <li>
-    The <var>GCD</var> and <var>LCM</var> routines were taken from a <a
-      href="http://www.efg2.com/Lab/Library/UseNet/2000/0315b.txt"
-    >UseNet post</a> by Hans van Kruijssen.
-  </li>
-  <li>
-    The <var>DecimalToFraction</var> routine was adapted from the Turbo Pascal
-    code presented in &quot;<a
-      href="http://homepage.smc.edu/kennedy_john/DEC2FRAC.PDF"
-    >Algorithm To Convert A Decimal To A Fraction</a>&quot; by John Kennedy,
-    Mathematics Department, Santa Monica College.
-  </li>
-</ul>
-
-
-<h2 id="bugs">
-  Bugs and Feature Requests
-</h2>
-
-<p>
-  Bugs can be reported or new features requested via the <a
-    href="http://www.delphidabbler.com/url/ddlib-issues"
-  >Issue Tracker</a>.
-</p>
-
-<p>
-  If no similar report or request has been recorded already, use the <em>New
-  Issue</em> link to add a new issue. Please select the most appropriate
-  template from the <em>Templates</em> drop down list and change the
-  <code>Project-unspecified</code> label to <code>Project-fractions</code>.
-</p>
-
-
-<h2 id="author">
-  About the Author
-</h2>
-
-<p>
-  I'm Peter Johnson &ndash; a hobbyist programmer living in Ceredigion in West
-  Wales, UK, writing write mainly in Delphi. My programs and code are available
-  from: <a
-    href="http://delphidabbler.com/"
-  >http://www.delphidabbler.com/</a>.
-</p>
-
-<p>
-  I can be <a
-    href="http://delphidabbler.com/contact"
-  >contacted via the website</a>.
-</p>
-
-
-<div class="endnotes">
-  <div class="comments">
-    Please do <a
-      href="http://delphidabbler.com/contact"
-    >let me know</a> if you have any comments about the unit, but please use the
-    Issue Tracker above to report bugs and request new features.
-  </div>
-  <div class="copyright">
-    This document is copyright &copy; 2013-2014, P D Johnson, <a
-      href="http://delphidabbler.com/"
-    >delphidabbler.com</a>.
-  </div>
-</div>
-
-</body>
-
-</html>
+This document is copyright © 2013-2022, [P D Johnson](https://gravatar.com/delphidabbler).
