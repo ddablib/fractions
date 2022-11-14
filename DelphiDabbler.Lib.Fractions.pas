@@ -10,13 +10,12 @@
  *
  * Acknowledgements:
  *   o The information on fractions in the Mathematics Help Facility at
- *     http://www.themathleague.com/ was useful in writing this code.
+ *     https://mathleague.com/ was useful in writing this code.
  *   o The GCD and LCM routines were taken from a UseNet post by Hans van
- *     Kruijssen: see http://www.efg2.com/Lab/Library/UseNet/2000/0315b.txt.
+ *     Kruijssen [link broken].
  *   o The DecimalToFraction routine was adapted from the Turbo Pascal code
  *     presented in "Algorithm To Convert A Decimal To A Fraction" by John
- *     Kennedy, Mathematics Department, Santa Monica College. See
- *     http://homepage.smc.edu/kennedy_john/DEC2FRAC.PDF
+ *     Kennedy, Mathematics Department, Santa Monica College.
 }
 
 
