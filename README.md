@@ -48,6 +48,7 @@ All relevant trademarks are acknowledged.
 * The information on fractions in the Mathematics Help Facility at [https://mathleague.com/](https://mathleague.com/) was useful in writing this code.
 * The GCD and LCM routines were taken from a UseNet post by Hans van Kruijssen that I found on the now defunct EFG site.
 * The DecimalToFraction routine was adapted from the Turbo Pascal code presented in "Algorithm To Convert A Decimal To A Fraction" by John Kennedy, Mathematics Department, Santa Monica College, USA.
+* [lukas-hribik](https://github.com/lukas-hribik) for reworking the LCM function to reduce the chance of integer overflow [issue #8].
 
 ## Bugs and Feature Requests
 
@@ -59,4 +60,4 @@ Please check if an issue has already been created for a similar report or reques
 
 I'm Peter Johnson – a hobbyist programmer living in Ceredigion in West Wales, UK, writing mainly in Delphi. My programs and other library code are available from: [https://delphidabbler.com/](https://delphidabbler.com/).
 
-This document is copyright © 2013-2022, [P D Johnson](https://gravatar.com/delphidabbler).
+This document is copyright © 2013-2023, [P D Johnson](https://gravatar.com/delphidabbler).
