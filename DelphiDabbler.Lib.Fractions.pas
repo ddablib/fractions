@@ -3,20 +3,21 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2013-2014, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2013-2023, Peter Johnson (www.delphidabbler.com).
  *
  * Defines an advanced record type that encapsulates fraction and related
  * operations.
  *
  * Acknowledgements:
  *   o The information on fractions in the Mathematics Help Facility at
- *     http://www.themathleague.com/ was useful in writing this code.
+ *     https://mathleague.com/ was useful in writing this code.
  *   o The GCD and LCM routines were taken from a UseNet post by Hans van
- *     Kruijssen: see http://www.efg2.com/Lab/Library/UseNet/2000/0315b.txt.
+ *     Kruijssen [link broken].
  *   o The DecimalToFraction routine was adapted from the Turbo Pascal code
  *     presented in "Algorithm To Convert A Decimal To A Fraction" by John
- *     Kennedy, Mathematics Department, Santa Monica College. See
- *     http://homepage.smc.edu/kennedy_john/DEC2FRAC.PDF
+ *     Kennedy, Mathematics Department, Santa Monica College.
+ *   o lukas-hribik (https://github.com/lukas-hribik) for suggesting a reworking
+ *     of the LCM function to reduce the chance of integer overflow.
 }
 
 
@@ -313,7 +314,7 @@ end;
 ///  <summary>Calculates the least common multiple of two integers.</summary>
 function LCM(A, B: Int64): Int64;
 begin
-  Result := (A * B) div GCD(A, B);
+  Result := A * (B div GCD(A, B));
 end;
 
 ///  <summary>Converts a decimal to a fraction.</summary>
