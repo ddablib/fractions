@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2013-2023, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2013-2025, Peter Johnson (www.delphidabbler.com).
  *
  * Defines an advanced record type that encapsulates fraction and related
  * operations.
@@ -31,9 +31,17 @@ unit DelphiDabbler.Lib.Fractions;
 // For Delphi XE2 and later we qualify used unit names with namespaces
 {$UNDEF CANCOMPILE}
 {$UNDEF RTLNAMESPACES}
+{$UNDEF HasSystemHashUnit}
+{$UNDEF SupportsManagedRecords}
 {$IFDEF CONDITIONALEXPRESSIONS}
   {$IF CompilerVersion >= 24.0} // Delphi XE3 and later
     {$LEGACYIFEND ON}  // NOTE: this must come before all $IFEND directives
+  {$IFEND}
+  {$IF CompilerVersion >= 34.0} // Delphi 10.4 Sydney
+    {$DEFINE SupportsManagedRecords}
+  {$IFEND}
+  {$IF CompilerVersion >= 29.0} // Delphi XE8 and later
+    {$DEFINE HasSystemHashUnit}
   {$IFEND}
   {$IF CompilerVersion >= 23.0} // Delphi XE2 and later
     {$DEFINE RTLNAMESPACES}
@@ -89,12 +97,24 @@ type
     ///  </remarks>
     constructor Create(const Numerator, Denominator: Int64);
 
+    {$IFDEF SupportsManagedRecords}
+    ///  <summary>Initialise the record to have a numerator of 0 and a
+    ///  denominator of 1 ensuring a valid (zero) fraction.</summary>
+    class operator Initialize(out Dest: TFraction);
+    {$ENDIF}
+
     ///  <summary>This fraction's numerator.</summary>
     ///  <remarks>Can be positive, negative or zero.</remarks>
     property Numerator: Int64 read fNumerator;
 
     ///  <summary>This fraction's denominator.</summary>
-    ///  <remarks>Always positive.</remarks>
+    ///  <remarks>
+    ///  <para>Always positive.</para>
+    ///  <para>WARNING: for compilers before Delphi 10.4 Sydney, the denominator
+    ///  will be zero until the constructor is called either explicitly or
+    ///  implicitly, meaning the fraction is invalid. From Delphi 10.4 onwards
+    ///  the denominator is initialised to 1, making the fraction valid.</para>
+    ///  </remarks>
     property Denominator: Int64 read fDenominator;
 
     ///  <summary>The whole number part of this fraction when viewed as a mixed
@@ -192,10 +212,22 @@ type
     ///  <summary>Returns the given fraction raised to the given power.
     ///  </summary>
     class function Power(const F: TFraction; Exponent: ShortInt): TFraction;
-      static;
+      overload; static;
+
+    ///  <summary>Returns this fraction raised to the given power.</summary>
+    function Power(const Exponent: ShortInt): TFraction; overload;
 
     ///  <summary>Returns the absoulte value of the given fraction.</summary>
-    class function Abs(const F: TFraction): TFraction; static;
+    class function Abs(const F: TFraction): TFraction; overload; static;
+
+    ///  <summary>Returns the absolute value of this fraction.</summary>
+    ///  <remarks>The fraction is simplified before taking the hash, so two
+    ///  fractions that simplify to the same fraction hash to the same value.
+    ///  </remarks>
+    function Abs: TFraction; overload;
+
+    ///  <summary>Returns a hash of the fraction.</summary>
+    function Hash: Integer;
 
     ///  <summary>Enables assignment of an integer to a fraction.</summary>
     ///  <remarks>Resulting fraction will have numerator=I and denominator=1.
@@ -290,10 +322,17 @@ implementation
 uses
   // RTL / VCL units
   {$IFDEF RTLNAMESPACES}
-  System.SysUtils;
+  System.SysUtils,
+  {$IFDEF HasSystemHashUnit}
+  System.Hash
   {$ELSE}
-  SysUtils;
+  System.Generics.Defaults
   {$ENDIF}
+  {$ELSE}
+  SysUtils,
+  Generics.Defaults
+  {$ENDIF}
+  ;
 
 
 ///  <summary>Calculates the greatest common divisor of two given integers.
@@ -391,6 +430,11 @@ end;
 class function TFraction.Abs(const F: TFraction): TFraction;
 begin
   Result := TFraction.Create(System.Abs(F.Numerator), F.Denominator);
+end;
+
+function TFraction.Abs: TFraction;
+begin
+  Result := TFraction.Abs(Self);
 end;
 
 class operator TFraction.Add(const A, B: TFraction): TFraction;
@@ -499,6 +543,23 @@ begin
   Result := (Numerator mod Factor = 0) and (Denominator mod Factor = 0);
 end;
 
+function TFraction.Hash: Integer;
+type
+  THashRec = record N, D: Int64; end;
+var
+  SimplifiedF: TFraction;
+  HashData: THashRec;
+begin
+  SimplifiedF := Simplify;
+  HashData.N := SimplifiedF.Numerator;
+  HashData.D := SimplifiedF.Denominator;
+  {$IFDEF HasSystemHashUnit}
+  Result := THashBobJenkins.GetHashValue(HashData, SizeOf(HashData), 0);
+  {$ELSE}
+  Result := BobJenkinsHash(HashData, SizeOf(HashData), 0);
+  {$ENDIF}
+end;
+
 class operator TFraction.Implicit(const I: Integer): TFraction;
 begin
   Result := TFraction.Create(I, 1);
@@ -523,9 +584,17 @@ begin
   DecimalToFraction(E, FNumerator, FDenominator, DecimalPlaces);
   if (System.Abs(FNumerator) >= LargestNumerator)
     or (System.Abs(FDenominator) >= LargestDenominator) then
-    raise EConvertError.Create(sCantConvert);
+    raise EConvertError.CreateFmt(sCantConvert, [E]);
   Result := TFraction.Create(Round(FNumerator), Round(FDenominator)).Simplify;
 end;
+
+{$IFDEF SupportsManagedRecords}
+class operator TFraction.Initialize(out Dest: TFraction);
+begin
+  Dest.fNumerator := 0;
+  Dest.fDenominator := 1;
+end;
+{$ENDIF}
 
 class operator TFraction.IntDivide(const A, B: TFraction): Int64;
 var
@@ -624,6 +693,11 @@ end;
 class operator TFraction.Positive(const F: TFraction): TFraction;
 begin
   Result := F;
+end;
+
+function TFraction.Power(const Exponent: ShortInt): TFraction;
+begin
+  Result := Power(Self, Exponent);
 end;
 
 class function TFraction.Power(const F: TFraction; Exponent: ShortInt):

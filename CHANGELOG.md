@@ -1,5 +1,20 @@
 # Change Log for Fractions unit
 
+## v0.2.0 rc1 of 06 April 2025
+
+_This is a v1.0 release candidate._
+
++ Added new _Power_ and _Abs_ overloaded methods to _TFraction_. These are instance method overloads of the existing class methods [issue #4].
++ Added new _TFraction.Hash_ instance method [issue #11].
++ Added new _Initialize_ operator overload, conditionally compiled for Delphi 10.4 and later, that initialises _TFraction_ variables to a valid zero value with numerator = 0 and denominator = 1 [issue #3].
++ Fixed bug in an exception error message format string that could causes a crash [issue #10].
++ Added unit tests for all the new methods and a conditionally compiled test for the _Initialize_ operater overload for Delphi 10.4 and later.
++ Overhauled `Release.bat` release script [issue #9]:
+  + Fixed bug that was preventing the `README.md` and `CHANGELOG.md` files from being packaged following their renaming.
+  + Added ability to take release version number as a command line parameter and to include the version number in the zip file name.
+  + General refactoring.
++ Revised details of compiler support in `README.md`.
+
 ## v0.1.2 beta of 13 December 2023
 
 + Revised _LCM_ routine to reduce chance of integer overflow [issue #8].

@@ -12,7 +12,11 @@ _DUnit_ tests for _TFraction_ are included in the download.
 
 ## Compatibility
 
-This unit requires Delphi 2009 as a minimum and has been tested on all 32 bit Windows compilers from Delphi 2009 to Delphi XE4 and 64 bit Windows compilers from Delphi XE2 to XE4.
+This unit is designed for compilation with 32 bit and 64 bit Windows Delphi compilers. It is designed to compile with compilers from Delphi XE onwards. It may compile with Delphi 2009 and Delphi 2010, but this is not tested and not guaranteed.
+
+The code uses only Delphi RTL libraries and so should be able to compile for any platform supported by Delphi.
+
+The unit is compatible with both VCL and FMX applications.
 
 ## Installation
 
@@ -60,4 +64,4 @@ Please check if an issue has already been created for a similar report or reques
 
 I'm Peter Johnson – a hobbyist programmer living in Ceredigion in West Wales, UK, writing mainly in Delphi. My programs and other library code are available from: [https://delphidabbler.com/](https://delphidabbler.com/).
 
-This document is copyright © 2013-2023, [P D Johnson](https://gravatar.com/delphidabbler).
+This document is copyright © 2013-2025, [P D Johnson](https://gravatar.com/delphidabbler).

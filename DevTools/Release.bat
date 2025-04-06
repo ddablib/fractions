@@ -1,7 +1,19 @@
 @rem ---------------------------------------------------------------------------
-@rem Fractions Unit
+@rem Script used to create zip file containing source code of the Fractions 
+@rem unit.
 @rem
-@rem Script used to create zip file containing release files.
+@rem Requirements:
+@rem
+@rem 1) This script uses the zip.exe program to create the release zip file.
+@rem
+@rem 2) If the ZIPPATH environment variable exists it must provide the path to
+@rem    the directory where zip.exe is located. ZIPPATH *must not* have a
+@rem    trailing backslash. If ZIPPATH does not exist then Zip.exe is expected
+@rem    to be on the path.
+@rem
+@rem 3) A release version number may be provided as a parameter to the script.
+@rem    When present the version number is included in the name of the zip file
+@rem    that is created.
 @rem
 @rem Any copyright in this file is dedicated to the Public Domain.
 @rem http://creativecommons.org/publicdomain/zero/1.0/
@@ -11,23 +23,31 @@
 
 setlocal
 
-set ReleaseDir=Release
-set OutFile=%ReleaseDir%\dd-fractions.zip
+cd ..
+
+set SrcDir=
 set DocsDir=Docs
 set TestDir=Test
 
-cd .\..
+set OutFile=Release\dd-fractions
+if not "%1"  == "" set OutFile=%OutFile%-%1
+set OutFile=%OutFile%.zip
+echo Output file name = %OutFile%
+if exist %OutFile% del %OutFile%
 
-if exist %ReleaseDir% rmdir /S /Q %ReleaseDir%
-mkdir %ReleaseDir%
+if not "%ZIPPATH%" == "" set ZIPPATH=%ZIPPATH%\
+echo Zip path = %ZIPPATH%
 
-zip %OutFile% -j -9 DelphiDabbler.Lib.Fractions.pas
+if exist Release rmdir /S /Q Release
+mkdir Release
 
-zip %OutFile% -j -9 %DocsDir%\ChangeLog.txt
-zip %OutFile% -j -9 %DocsDir%\MPL-2.txt
-zip %OutFile% -j -9 %DocsDir%\ReadMe.htm
-zip %OutFile% -j -9 %DocsDir%\Documentation.URL
+%ZIPPATH%Zip.exe -j -9 %OutFile% DelphiDabbler.Lib.Fractions.pas
 
-zip %OutFile% -r -9 %TestDir%\*.* -x *.svn\*
+%ZIPPATH%Zip.exe -j -9 %OutFile% CHANGELOG.md
+%ZIPPATH%Zip.exe -j -9 %OutFile% README.md
+%ZIPPATH%Zip.exe -j -9 %OutFile% %DocsDir%\MPL-2.txt
+%ZIPPATH%Zip.exe -j -9 %OutFile% %DocsDir%\Documentation.URL
+
+%ZIPPATH%Zip.exe %OutFile% -r -9 %TestDir%\*.*
 
 endlocal
