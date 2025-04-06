@@ -51,8 +51,10 @@ type
     procedure TestConvert;
     procedure TestRoundToMultiple;
     procedure TestTruncateToMultiple;
-    procedure TestPower;
-    procedure TestAbs;
+    procedure TestPower_Class_Method;
+    procedure TestPower_Instance_Method;
+    procedure TestAbs_Class_Method;
+    procedure TestAbs_Instance_Method;
   end;
 
 implementation
@@ -62,7 +64,7 @@ uses
 
 { TestTFraction }
 
-procedure TestTFraction.TestAbs;
+procedure TestTFraction.TestAbs_Class_Method;
 var
   F, FRes: TFraction;
 begin
@@ -95,6 +97,41 @@ begin
   FRes := TFraction.Abs(F);
   CheckEquals(6, FRes.Numerator, 'Test 4 Numerator');
   CheckEquals(4, FRes.Denominator, 'Test 4 Denominator');
+end;
+
+procedure TestTFraction.TestAbs_Instance_Method;
+var
+  F, FRes: TFraction;
+begin
+  F := TFraction.Create(2, 3);
+  FRes := F.Abs;
+  CheckEquals(2, FRes.Numerator, 'Test 1 Numerator');
+  CheckEquals(3, FRes.Denominator, 'Test 1 Denominator');
+
+  F := TFraction.Create(-4, 3);
+  FRes := TFraction.Abs(F);
+  CheckEquals(4, FRes.Numerator, 'Test 2 Numerator');
+  CheckEquals(3, FRes.Denominator, 'Test 2 Denominator');
+
+  F := 4;
+  FRes := F.Abs;
+  CheckEquals(4, FRes.Numerator, 'Test 3 Numerator');
+  CheckEquals(1, FRes.Denominator, 'Test 3 Denominator');
+
+  F := -42;
+  FRes := F.Abs;
+  CheckEquals(42, FRes.Numerator, 'Test 4 Numerator');
+  CheckEquals(1, FRes.Denominator, 'Test 4 Denominator');
+
+  F := 0;
+  FRes := F.Abs;
+  CheckEquals(0, FRes.Numerator, 'Test 5 Numerator');
+  CheckEquals(1, FRes.Denominator, 'Test 5 Denominator');
+
+  F := TFraction.Create(-6, 4);
+  FRes := F.Abs;
+  CheckEquals(6, FRes.Numerator, 'Test 6 Numerator');
+  CheckEquals(4, FRes.Denominator, 'Test 6 Denominator');
 end;
 
 procedure TestTFraction.TestAddOp;
@@ -898,56 +935,91 @@ begin
   CheckEquals(3, FRes.Denominator, 'Test 4 Denominator');
 end;
 
-procedure TestTFraction.TestPower;
+procedure TestTFraction.TestPower_Class_Method;
+var
+  F, FRes: TFraction;
+begin
+  F := TFraction.Create(2, 3);
+  FRes := TFraction.Abs(F);
+  CheckEquals(2, FRes.Numerator, 'Test 1 Numerator');
+  CheckEquals(3, FRes.Denominator, 'Test 1 Denominator');
+
+  F := TFraction.Create(-4, 3);
+  FRes := TFraction.Abs(F);
+  CheckEquals(4, FRes.Numerator, 'Test 2 Numerator');
+  CheckEquals(3, FRes.Denominator, 'Test 2 Denominator');
+
+  F := 4;
+  FRes := TFraction.Abs(F);
+  CheckEquals(4, FRes.Numerator, 'Test 3 Numerator');
+  CheckEquals(1, FRes.Denominator, 'Test 3 Denominator');
+
+  F := -42;
+  FRes := TFraction.Abs(F);
+  CheckEquals(42, FRes.Numerator, 'Test 4 Numerator');
+  CheckEquals(1, FRes.Denominator, 'Test 4 Denominator');
+
+  F := 0;
+  FRes := TFraction.Abs(F);
+  CheckEquals(0, FRes.Numerator, 'Test 4 Numerator');
+  CheckEquals(1, FRes.Denominator, 'Test 4 Denominator');
+
+  F := TFraction.Create(-6, 4);
+  FRes := TFraction.Abs(F);
+  CheckEquals(6, FRes.Numerator, 'Test 4 Numerator');
+  CheckEquals(4, FRes.Denominator, 'Test 4 Denominator');
+end;
+
+procedure TestTFraction.TestPower_Instance_Method;
 var
   F, FR, FRec: TFraction;
 begin
   F := 0;
-  FR := TFraction.Power(F, 4);
+  FR := F.Power(4);
   CheckEquals(0, FR.Numerator, 'Test1 Numerator');
   CheckEquals(1, FR.Denominator, 'Test1 Denominator');
   F := TFraction.Create(3, 4);
-  FR := TFraction.Power(F, 3);
+  FR := F.Power(3);
   CheckEquals(27, FR.Numerator, 'Test 2 Numerator');
   CheckEquals(64, FR.Denominator, 'Test 2 Denominator');
   F := TFraction.Create(6, 15);
-  FR := TFraction.Power(F, -2);
+  FR := F.Power(-2);
   CheckEquals(25, FR.Numerator, 'Test 3 Numerator');
   CheckEquals(4, FR.Denominator, 'Test 3 Denominator');
   F := TFraction.Create(15, 6);
-  FR := TFraction.Power(F, 2);
+  FR := F.Power(2);
   CheckEquals(25, FR.Numerator, 'Test 4 Numerator');
   CheckEquals(4, FR.Denominator, 'Test 4 Denominator');
   F := TFraction.Create(6, 15);
-  FR := TFraction.Power(F, 0);
+  FR := F.Power(0);
   CheckEquals(1, FR.Numerator, 'Test 5 Numerator');
   CheckEquals(1, FR.Denominator, 'Test 5 Denominator');
   F := TFraction.Create(-3, 4);
-  FR := TFraction.Power(F, 2);
+  FR := F.Power(2);
   CheckEquals(9, FR.Numerator, 'Test 6 Numerator');
   CheckEquals(16, FR.Denominator, 'Test 6 Denominator');
   F := TFraction.Create(-3, 4);
-  FR := TFraction.Power(F, 3);
+  FR := F.Power(3);
   CheckEquals(-27, FR.Numerator, 'Test 7 Numerator');
   CheckEquals(64, FR.Denominator, 'Test 7 Denominator');
   F := TFraction.Create(7, 5);
-  FR := TFraction.Power(F, 2);
+  FR := F.Power(2);
   CheckEquals(49, FR.Numerator, 'Test 8 Numerator');
   CheckEquals(25, FR.Denominator, 'Test 8 Denominator');
   F := TFraction.Create(7, 3);
-  FR := TFraction.Power(F, 1);
+  FR := F.Power(1);
   CheckEquals(7, FR.Numerator, 'Test 9 Numerator');
   CheckEquals(3, FR.Denominator, 'Test 9 Denominator');
   F := TFraction.Create(9, 3);
-  FR := TFraction.Power(F, 2);
+  FR := F.Power(2);
   CheckEquals(9, FR.Numerator, 'Test 10 Numerator');
   CheckEquals(1, FR.Denominator, 'Test 10 Denominator');
   F := TFraction.Create(7, 5);
-  FR := TFraction.Power(F, -1);
+  FR := F.Power(-1);
   CheckEquals(5, FR.Numerator, 'Test 11 Numerator');
   CheckEquals(7, FR.Denominator, 'Test 11 Denominator');
   F := TFraction.Create(7, 5);
-  FR := TFraction.Power(F, -1);
+  FR := F.Power(-1);
   FRec := F.Reciprocal;
   CheckEquals(FRec.Numerator, FR.Numerator, 'Test 12 Numerator');
   CheckEquals(FRec.Denominator, FR.Denominator, 'Test 12 Denominator');
