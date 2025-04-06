@@ -31,9 +31,13 @@ unit DelphiDabbler.Lib.Fractions;
 // For Delphi XE2 and later we qualify used unit names with namespaces
 {$UNDEF CANCOMPILE}
 {$UNDEF RTLNAMESPACES}
+{$UNDEF HasSystemHashUnit}
 {$IFDEF CONDITIONALEXPRESSIONS}
   {$IF CompilerVersion >= 24.0} // Delphi XE3 and later
     {$LEGACYIFEND ON}  // NOTE: this must come before all $IFEND directives
+  {$IFEND}
+  {$IF CompilerVersion >= 29.0} // Delphi XE8 and later
+    {$DEFINE HasSystemHashUnit}
   {$IFEND}
   {$IF CompilerVersion >= 23.0} // Delphi XE2 and later
     {$DEFINE RTLNAMESPACES}
@@ -201,7 +205,13 @@ type
     class function Abs(const F: TFraction): TFraction; overload; static;
 
     ///  <summary>Returns the absolute value of this fraction.</summary>
+    ///  <remarks>The fraction is simplified before taking the hash, so two
+    ///  fractions that simplify to the same fraction hash to the same value.
+    ///  </remarks>
     function Abs: TFraction; overload;
+
+    ///  <summary>Returns a hash of the fraction.</summary>
+    function Hash: Integer;
 
     ///  <summary>Enables assignment of an integer to a fraction.</summary>
     ///  <remarks>Resulting fraction will have numerator=I and denominator=1.
@@ -296,10 +306,17 @@ implementation
 uses
   // RTL / VCL units
   {$IFDEF RTLNAMESPACES}
-  System.SysUtils;
+  System.SysUtils,
+  {$IFDEF HasSystemHashUnit}
+  System.Hash
   {$ELSE}
-  SysUtils;
+  System.Generics.Defaults
   {$ENDIF}
+  {$ELSE}
+  SysUtils,
+  Generics.Defaults
+  {$ENDIF}
+  ;
 
 
 ///  <summary>Calculates the greatest common divisor of two given integers.
@@ -508,6 +525,23 @@ begin
   if Factor = 0 then
     Exit(False);
   Result := (Numerator mod Factor = 0) and (Denominator mod Factor = 0);
+end;
+
+function TFraction.Hash: Integer;
+type
+  THashRec = record N, D: Int64; end;
+var
+  SimplifiedF: TFraction;
+  HashData: THashRec;
+begin
+  SimplifiedF := Simplify;
+  HashData.N := SimplifiedF.Numerator;
+  HashData.D := SimplifiedF.Denominator;
+  {$IFDEF HasSystemHashUnit}
+  Result := THashBobJenkins.GetHashValue(HashData, SizeOf(HashData), 0);
+  {$ELSE}
+  Result := BobJenkinsHash(HashData, SizeOf(HashData), 0);
+  {$ENDIF}
 end;
 
 class operator TFraction.Implicit(const I: Integer): TFraction;
