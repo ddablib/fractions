@@ -55,6 +55,7 @@ type
     procedure TestPower_Instance_Method;
     procedure TestAbs_Class_Method;
     procedure TestAbs_Instance_Method;
+    procedure TestHash;
   end;
 
 implementation
@@ -572,6 +573,27 @@ begin
   CheckTrue(F.HasCommonFactor(-2), 'Test 3');
   CheckFalse(F.HasCommonFactor(5), 'Test 4');
   CheckFalse(F.HasCommonFactor(0), 'Test 5');
+end;
+
+procedure TestTFraction.TestHash;
+var
+  F1, F2: TFraction;
+begin
+  F1 := TFraction.Create(12, 31);
+  F2 := TFraction.Create(12, 31);
+  CheckEquals(F1.Hash, F2.Hash, 'Test 1');
+  F1 := TFraction.Create(0, 4);
+  F2 := TFraction.Create(0, 27);
+  CheckEquals(F1.Hash, F2.Hash, 'Test 2');
+  F1 := 7;
+  F2 := 7;
+  CheckEquals(F1.Hash, F2.Hash, 'Test 3');
+  F1 := TFraction.Create(12, 16);
+  F2 := TFraction.Create(24, 32);
+  CheckEquals(F1.Hash, F2.Hash, 'Test 4');
+  F1 := TFraction.Create(1, 3);
+  F2 := TFraction.Create(2, 7);
+  CheckNotEquals(F1.Hash, F2.Hash, 'Test 5');
 end;
 
 procedure TestTFraction.TestImplicit;
@@ -1140,7 +1162,7 @@ end;
 
 procedure TestTFraction.TestSimplify;
 var
-  F, G: TFraction;
+  F, F2, G, G2: TFraction;
 begin
   // testing Simplify(CommonFactor)
   F := TFraction.Create(24, 32);
@@ -1181,6 +1203,15 @@ begin
   G := F.Simplify;
   CheckEquals(11, G.Numerator, 'Test B4 Numerator');
   CheckEquals(12, G.Denominator, 'Test B4 Denominator');
+  // Check two fractions that have same GCD simplify to same value
+  F := TFraction.Create(6, 54);
+  F2 := TFraction.Create(3, 27);
+  G := F.Simplify;
+  G2 := F2.Simplify;
+  CheckEquals(1, G.Numerator, 'Test B5 Numerator #1');
+  CheckEquals(1, G2.Numerator, 'Test B5 Numerator #2');
+  CheckEquals(9, G.Denominator, 'Test B5 Denominator #1');
+  CheckEquals(9, G2.Denominator, 'Test B5 Denominator #2');
 end;
 
 procedure TestTFraction.TestSubtractOp;
