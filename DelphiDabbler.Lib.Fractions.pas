@@ -32,9 +32,13 @@ unit DelphiDabbler.Lib.Fractions;
 {$UNDEF CANCOMPILE}
 {$UNDEF RTLNAMESPACES}
 {$UNDEF HasSystemHashUnit}
+{$UNDEF SupportsManagedRecords}
 {$IFDEF CONDITIONALEXPRESSIONS}
   {$IF CompilerVersion >= 24.0} // Delphi XE3 and later
     {$LEGACYIFEND ON}  // NOTE: this must come before all $IFEND directives
+  {$IFEND}
+  {$IF CompilerVersion >= 34.0} // Delphi 10.4 Sydney
+    {$DEFINE SupportsManagedRecords}
   {$IFEND}
   {$IF CompilerVersion >= 29.0} // Delphi XE8 and later
     {$DEFINE HasSystemHashUnit}
@@ -93,12 +97,24 @@ type
     ///  </remarks>
     constructor Create(const Numerator, Denominator: Int64);
 
+    {$IFDEF SupportsManagedRecords}
+    ///  <summary>Initialise the record to have a numerator of 0 and a
+    ///  denominator of 1 ensuring a valid (zero) fraction.</summary>
+    class operator Initialize(out Dest: TFraction);
+    {$ENDIF}
+
     ///  <summary>This fraction's numerator.</summary>
     ///  <remarks>Can be positive, negative or zero.</remarks>
     property Numerator: Int64 read fNumerator;
 
     ///  <summary>This fraction's denominator.</summary>
-    ///  <remarks>Always positive.</remarks>
+    ///  <remarks>
+    ///  <para>Always positive.</para>
+    ///  <para>WARNING: for compilers before Delphi 10.4 Sydney, the denominator
+    ///  will be zero until the constructor is called either explicitly or
+    ///  implicitly, meaning the fraction is invalid. From Delphi 10.4 onwards
+    ///  the denominator is initialised to 1, making the fraction valid.</para>
+    ///  </remarks>
     property Denominator: Int64 read fDenominator;
 
     ///  <summary>The whole number part of this fraction when viewed as a mixed
@@ -571,6 +587,14 @@ begin
     raise EConvertError.CreateFmt(sCantConvert, [E]);
   Result := TFraction.Create(Round(FNumerator), Round(FDenominator)).Simplify;
 end;
+
+{$IFDEF SupportsManagedRecords}
+class operator TFraction.Initialize(out Dest: TFraction);
+begin
+  Dest.fNumerator := 0;
+  Dest.fDenominator := 1;
+end;
+{$ENDIF}
 
 class operator TFraction.IntDivide(const A, B: TFraction): Int64;
 var
