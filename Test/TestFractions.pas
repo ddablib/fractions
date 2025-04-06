@@ -12,6 +12,20 @@
 
 unit TestFractions;
 
+{$UNDEF SupportsUnitScopeNames}
+{$UNDEF SupportsManagedRecords}
+{$IFDEF CONDITIONALEXPRESSIONS}
+  {$IF CompilerVersion >= 24.0} // Delphi XE3 and later
+    {$LEGACYIFEND ON}  // NOTE: this must come before all $IFEND directives
+  {$IFEND}
+  {$IF CompilerVersion >= 34.0} // Delphi 10.4 Sydney
+    {$DEFINE SupportsManagedRecords}
+  {$IFEND}
+  {$IF CompilerVersion >= 23.0} // Delphi XE2 and later
+    {$DEFINE SupportsUnitScopeNames}
+  {$IFEND}
+{$ENDIF}
+
 interface
 
 uses
@@ -24,6 +38,9 @@ type
     // Order of tests is important since some later tests assume some of methods
     // tested earlier work correctly.
     procedure TestConstructors;
+    {$IFDEF SupportsManagedRecords}
+    procedure TestInitialisation;
+    {$ENDIF}
     procedure TestCalculatedProperties;
     procedure TestImplicit;
     procedure TestIsProper;
@@ -651,6 +668,16 @@ begin
   CheckEquals(6, F.Numerator, 'Test Explicit 1 Numerator');
   CheckEquals(1, F.Denominator, 'Test Explicit 1 Denominator');
 end;
+
+{$IFDEF SupportsManagedRecords}
+procedure TestTFraction.TestInitialisation;
+var
+  F: TFraction;
+begin
+  CheckEquals(0, F.Numerator, 'Numerator');
+  CheckEquals(1, F.Denominator, 'Denominator');
+end;
+{$ENDIF}
 
 procedure TestTFraction.TestIntDivideOp;
 var
