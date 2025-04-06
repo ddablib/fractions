@@ -64,4 +64,4 @@ Please check if an issue has already been created for a similar report or reques
 
 I'm Peter Johnson – a hobbyist programmer living in Ceredigion in West Wales, UK, writing mainly in Delphi. My programs and other library code are available from: [https://delphidabbler.com/](https://delphidabbler.com/).
 
-This document is copyright © 2013-2023, [P D Johnson](https://gravatar.com/delphidabbler).
+This document is copyright © 2013-2025, [P D Johnson](https://gravatar.com/delphidabbler).
