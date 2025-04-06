@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2013-2023, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2013-2025, Peter Johnson (www.delphidabbler.com).
  *
  * Defines an advanced record type that encapsulates fraction and related
  * operations.
@@ -523,7 +523,7 @@ begin
   DecimalToFraction(E, FNumerator, FDenominator, DecimalPlaces);
   if (System.Abs(FNumerator) >= LargestNumerator)
     or (System.Abs(FDenominator) >= LargestDenominator) then
-    raise EConvertError.Create(sCantConvert);
+    raise EConvertError.CreateFmt(sCantConvert, [E]);
   Result := TFraction.Create(Round(FNumerator), Round(FDenominator)).Simplify;
 end;
 
