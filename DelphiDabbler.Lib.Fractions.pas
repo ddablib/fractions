@@ -232,7 +232,7 @@ type
     ///  <summary>Enables assignment of an integer to a fraction.</summary>
     ///  <remarks>Resulting fraction will have numerator=I and denominator=1.
     ///  </remarks>
-    class operator Implicit(const I: Integer): TFraction;
+    class operator Implicit(const I: Int64): TFraction;
 
     ///  <summary>Enables assignment of a fraction to a floating point value.
     ///  </summary>
@@ -560,7 +560,7 @@ begin
   {$ENDIF}
 end;
 
-class operator TFraction.Implicit(const I: Integer): TFraction;
+class operator TFraction.Implicit(const I: Int64): TFraction;
 begin
   Result := TFraction.Create(I, 1);
 end;

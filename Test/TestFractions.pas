@@ -618,6 +618,7 @@ var
   F: TFraction;
   E1, E2: Extended;
   D1, D2: Double;
+  I64_1, I64_2: Int64;
 begin
   // Integer => TFraction
   F := 12;
@@ -662,6 +663,16 @@ begin
   CheckEquals(7, F.Denominator, 'Test 8 Denominator');
   CheckEquals(D1, D2, 'Test 8 decimal');
   CheckTrue(SameValue(D2, F), 'Test 8 parameter cast');
+
+  // Int64 => TFraction
+  I64_1 := Int64(MaxInt) + 1000;
+  F := I64_1;
+  CheckEquals(I64_1, F.Numerator, 'Test 9 Numerator');
+  CheckEquals(1, F.Denominator, 'Test 9 Denominator');
+  I64_2 := Int64(-MaxInt) - 20000;
+  F := I64_2;
+  CheckEquals(I64_2, F.Numerator, 'Test 10 Numerator');
+  CheckEquals(1, F.Denominator, 'Test 10 Denominator');
 
   // Check that explicit works by implication
   F := TFraction(6);
