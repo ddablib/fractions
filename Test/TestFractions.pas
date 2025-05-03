@@ -1,6 +1,6 @@
 {
  * -----------------------------------------------------------------------------
- * Delphi DUnit test cases for the PJFractions unit.
+ * Delphi DUnit test cases for the DelphiDabbler.Lib.Fractions unit.
  *
  * These test cases were created with Delphi 2010 and haven't been checked with
  * any other compiler.

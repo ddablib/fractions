@@ -1,9 +1,10 @@
 {
- * Delphi DUnit Test Project for PJFractions.pas
- * ---------------------------------------------
+ * Delphi DUnit Test Project for DelphiDabbler.Lib.Fractions.pas
+ * -------------------------------------------------------------
  *
- * This project provides a DUnit test framework for the PJFractions.pas unit. It
- * can be compiled as either a GUI or Console application.
+ * This project provides a DUnit test framework for the
+ * DelphiDabbler.Lib.Fractions.pas unit. It can be compiled as either a GUI or a
+ * Console application.
  *
  * Console Application
  * ~~~~~~~~~~~~~~~~~~~
