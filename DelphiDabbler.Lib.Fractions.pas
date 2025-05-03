@@ -211,11 +211,11 @@ type
 
     ///  <summary>Returns the given fraction raised to the given power.
     ///  </summary>
-    class function Power(const F: TFraction; Exponent: ShortInt): TFraction;
+    class function Power(const F: TFraction; Exponent: Int8): TFraction;
       overload; static;
 
     ///  <summary>Returns this fraction raised to the given power.</summary>
-    function Power(const Exponent: ShortInt): TFraction; overload;
+    function Power(const Exponent: Int8): TFraction; overload;
 
     ///  <summary>Returns the absoulte value of the given fraction.</summary>
     class function Abs(const F: TFraction): TFraction; overload; static;
@@ -695,12 +695,12 @@ begin
   Result := F;
 end;
 
-function TFraction.Power(const Exponent: ShortInt): TFraction;
+function TFraction.Power(const Exponent: Int8): TFraction;
 begin
   Result := Power(Self, Exponent);
 end;
 
-class function TFraction.Power(const F: TFraction; Exponent: ShortInt):
+class function TFraction.Power(const F: TFraction; Exponent: Int8):
   TFraction;
 var
   X: TFraction;
