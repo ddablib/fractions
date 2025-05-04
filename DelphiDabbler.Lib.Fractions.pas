@@ -28,9 +28,9 @@ unit DelphiDabbler.Lib.Fractions;
 
 
 // Delphi 2009 or later is required to compile
-// For Delphi XE2 and later we qualify used unit names with namespaces
-{$UNDEF CANCOMPILE}
-{$UNDEF RTLNAMESPACES}
+// For Delphi XE2 and later we use scoped unit names
+{$UNDEF CanCompile}
+{$UNDEF SupportsUnitScopeNames}
 {$UNDEF HasSystemHashUnit}
 {$UNDEF SupportsManagedRecords}
 {$IFDEF CONDITIONALEXPRESSIONS}
@@ -44,13 +44,13 @@ unit DelphiDabbler.Lib.Fractions;
     {$DEFINE HasSystemHashUnit}
   {$IFEND}
   {$IF CompilerVersion >= 23.0} // Delphi XE2 and later
-    {$DEFINE RTLNAMESPACES}
+    {$DEFINE SupportsUnitScopeNames}
   {$IFEND}
   {$IF CompilerVersion >= 20.0} // Delphi 2009 and later
-    {$DEFINE CANCOMPILE}
+    {$DEFINE CanCompile}
   {$IFEND}
 {$ENDIF}
-{$IFNDEF CANCOMPILE}
+{$IFNDEF CanCompile}
   {$MESSAGE FATAL 'Delphi 2009 or later required'}
 {$ENDIF}
 
@@ -60,7 +60,7 @@ interface
 
 uses
   // RTL / VCL units
-  {$IFDEF RTLNAMESPACES}
+  {$IFDEF SupportsUnitScopeNames}
   System.Types, System.Math;
   {$ELSE}
   Types, Math;
@@ -321,7 +321,7 @@ implementation
 
 uses
   // RTL / VCL units
-  {$IFDEF RTLNAMESPACES}
+  {$IFDEF SupportsUnitScopeNames}
   System.SysUtils,
   {$IFDEF HasSystemHashUnit}
   System.Hash
