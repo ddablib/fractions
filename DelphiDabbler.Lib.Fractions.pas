@@ -61,9 +61,9 @@ interface
 uses
   // RTL / VCL units
   {$IFDEF SupportsUnitScopeNames}
-  System.Types, System.Math;
+  System.Types, System.Math, System.Generics.Defaults;
   {$ELSE}
-  Types, Math;
+  Types, Math, Generics.Defaults;
   {$ENDIF}
 
 
@@ -87,6 +87,35 @@ type
     function GetWholeNumberPart: Int64;
     ///  <summary>Read accessor for FractionalPart property.</summary>
     function GetFractionalPart: TFraction;
+
+  public
+    type
+      ///  <summary>Inner class that implements both <c>IComparer</c> and
+      ///  <c>IEqualityComparer</c> for a <c>TFraction</c>.</summary>
+      ///  <remarks>Note: all methods of this class consider two fractions to be
+      ///  equal if they are the same when reduced to common terms. For example
+      ///  3/4 and 9/12 have the same hash and compare as equal.</remarks>
+      TComparer =  class(TCustomComparer<TFraction>,
+        IComparer<TFraction>, IEqualityComparer<TFraction>)
+      protected
+        ///  <summary>Compares the two fractions <c>Left</c> and <c>Right</c>.
+        ///  </summary>
+        ///  <returns><c>Integer</c>. <c>0</c> if the two fractions are
+        ///  equivalent, <c>1</c> if <c>Left</c> is greater than <c>Right</c> or
+        ///  <c>-1</c> if <c>Left</c> is less than <c>Right</c>.</returns>
+        function Compare(const Left, Right: TFraction): Integer; override;
+        ///  <summary>Checks if the two fractions <c>Left</c> and <c>Right</c>
+        ///  are equivalent.</summary>
+        ///  <returns><c>Boolean</c>. <c>True</c> if the fractions are
+        ///  equivalent or <c>False</c> if not.</returns>
+        function Equals(const Left, Right: TFraction): Boolean;
+          overload; override;
+        ///  <summary>Gets the hash code of the given fraction.</summary>
+        ///  <returns><c>Integer</c>. The required hash code.</returns>
+        function GetHashCode(const AFraction: TFraction): Integer;
+          overload; override;
+  end;
+
   public
     ///  <summary>Constructs a fraction with given numerator and denominator.
     ///  </summary>
@@ -322,15 +351,12 @@ implementation
 uses
   // RTL / VCL units
   {$IFDEF SupportsUnitScopeNames}
-  System.SysUtils,
+  System.SysUtils
   {$IFDEF HasSystemHashUnit}
-  System.Hash
-  {$ELSE}
-  System.Generics.Defaults
+  , System.Hash
   {$ENDIF}
   {$ELSE}
-  SysUtils,
-  Generics.Defaults
+  SysUtils
   {$ENDIF}
   ;
 
@@ -799,6 +825,23 @@ begin
   Result := SimplifiedResult.Convert(
     F.Denominator div SimplifiedResult.Denominator
   );
+end;
+
+{ TFraction.TComparer }
+
+function TFraction.TComparer.Compare(const Left, Right: TFraction): Integer;
+begin
+  Result := TFraction.Compare(Left, Right);
+end;
+
+function TFraction.TComparer.Equals(const Left, Right: TFraction): Boolean;
+begin
+  Result := Left = Right;
+end;
+
+function TFraction.TComparer.GetHashCode(const AFraction: TFraction): Integer;
+begin
+  Result := AFraction.Hash;
 end;
 
 end.

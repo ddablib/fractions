@@ -75,10 +75,22 @@ type
     procedure TestHash;
   end;
 
+  // Test case for TFraction.TComparer
+  TestTComparer = class(TTestCase)
+  strict private
+    function EqualArrays(const Left, Right: array of TFraction): Boolean;
+  published
+    procedure TestCompare;
+    procedure TestEquals;
+    procedure TestGetHashCode;
+    procedure TestComparer;
+    procedure TestEqualityComparer;
+  end;
+
 implementation
 
 uses
-  Types, Math;
+  Types, Math, Generics.Defaults, Generics.Collections;
 
 { TestTFraction }
 
@@ -1449,10 +1461,201 @@ begin
   CheckEquals(1, G.Denominator, 'Test 4: Denominator');
 end;
 
+{ TestTComparer }
+
+function TestTComparer.EqualArrays(const Left, Right: array of TFraction):
+  Boolean;
+var
+  Idx: Integer;
+begin
+  Result := False;
+  if Length(Left) <> Length(Right) then
+    Exit;
+  for Idx := Low(Left) to High(Left) do
+    if Left[Idx] <> Right[Idx] then
+      Exit;
+  Result := True;
+end;
+
+procedure TestTComparer.TestCompare;
+var
+  F1, F2, F3, F4, F5, F6, F7, F8: TFraction;
+  EC: IComparer<TFraction>;
+begin
+  EC := TFraction.TComparer.Create;
+
+  F1 := TFraction.Create(3, 4);
+  F2 := F1;
+  F3 := TFraction.Create(-2, 4);
+  F4 := TFraction.Create(7, 9);
+  F5 := TFraction.Create(12, 16);
+  F6 := TFraction.Create(16, 12);
+  F7 := 4;
+  F8 := 0;
+
+  CheckEquals(EqualsValue, EC.Compare(F1, F2), 'Test 1');
+  CheckEquals(LessThanValue, EC.Compare(F1, F4), 'Test 2');
+  CheckEquals(GreaterThanValue, EC.Compare(F1, F3), 'Test 3');
+  CheckEquals(EqualsValue, EC.Compare(F1, F5), 'Test 4');
+  CheckEquals(LessThanValue, EC.Compare(F5, F6), 'Test 5');
+  CheckEquals(GreaterThanValue, EC.Compare(F7, F8), 'Test 6');
+  CheckEquals(LessThanValue, EC.Compare(F3, F8), 'Test 7');
+  CheckEquals(GreaterThanValue, EC.Compare(F8, F3), 'Test 8');
+end;
+
+procedure TestTComparer.TestComparer;
+var
+  L: TList<TFraction>;
+  F34, F78, F12, F56: TFraction;
+  AOrig, ASorted, ASorted2, ASortTest2: TArray<TFraction>;
+begin
+  L := TList<TFraction>.Create(TFraction.TComparer.Create);
+  try
+    F34 := TFraction.Create(3, 4);
+    F78 := TFraction.Create(7, 8);
+    F12 := TFraction.Create(1, 2);
+    F56 := TFraction.Create(5, 6);
+
+    AOrig := TArray<TFraction>.Create(F34, F78, F12);
+    ASorted := TArray<TFraction>.Create(F12, F34, F78);
+    ASorted2 := TArray<TFraction>.Create(F12, F34, F56, F78);
+    ASortTest2 := TArray<TFraction>.Create(F34, F12, F78, F56);
+
+    L.AddRange(AOrig);
+    CheckTrue(EqualArrays(AOrig, L.ToArray), 'Test 1');
+
+    L.Sort;
+    CheckTrue(EqualArrays(ASorted, L.ToArray), 'Test 2');
+
+    L.Add(F56);
+    L.Sort;
+    CheckTrue(EqualArrays(ASorted2, L.ToArray), 'Test 3');
+
+    CheckFalse(EqualArrays(ASorted2, ASortTest2), 'Test 4 precondition');
+    TArray.Sort<TFraction>(ASortTest2, TFraction.TComparer.Create);
+    CheckTrue(EqualArrays(ASorted2, ASortTest2), 'Test 4');
+
+    CheckTrue(L.Contains(F78), 'Test 5');
+
+    CheckFalse(L.Contains(TFraction.Create(2, 12)), 'Test 6');
+
+    // even though 2/4 was not added, we should get true here because 1/2 is in
+    // the list and they're equivalent
+    CheckTrue(L.Contains(TFraction.Create(2, 4)), 'Test 7');
+
+  finally
+    L.Free;
+  end;
+end;
+
+procedure TestTComparer.TestEqualityComparer;
+var
+  D: TDictionary<TFraction,string>;
+begin
+  D := TDictionary<TFraction,string>.Create(TFraction.TComparer.Create);
+  try
+    D.Add(TFraction.Create(1, 2), 'one-half');
+    D.Add(TFraction.Create(5, 6), 'five-sixths');
+    D.Add(TFraction.Create(7, 8), 'seven-eighths');
+    D.Add(TFraction.Create(3, 4), 'three-quarters');
+    D.Add(TFraction.Create(11, 12), 'eleven-twelths');
+
+    CheckTrue(D.ContainsKey(TFraction.Create(7, 8)), 'Test 1');
+    CheckTrue(D.ContainsKey(TFraction.Create(1, 2)), 'Test 2');
+    CheckFalse(D.ContainsKey(TFraction.Create(1, 3)), 'Test 3');
+    CheckEquals('one-half', D[TFraction.Create(1, 2)], 'Test 4');
+    CheckEquals('five-sixths', D[TFraction.Create(5, 6)], 'Test 5');
+
+    D.Remove(TFraction.Create(7, 8));
+    CheckFalse(D.ContainsKey(TFraction.Create(7, 8)), 'Test 6');
+
+    CheckFalse(D.ContainsKey(TFraction.Create(9, 8)), 'Test 7 pre-condition');
+    D.Add(TFraction.Create(9, 8), 'nine eighths');
+    CheckTrue(D.ContainsKey(TFraction.Create(9, 8)), 'Test 7a');
+    CheckEquals('nine eighths', D[TFraction.Create(9, 8)], 'Test 7b');
+
+    // 6/8 wasn't added explicitly, but it tests equal to 3/4, which is in the
+    // dictionary.
+    CheckTrue(D.ContainsKey(TFraction.Create(6, 8)), 'Test 8a');
+    CheckEquals('three-quarters', D[TFraction.Create(6, 8)], 'Test 8b');
+
+  finally
+    D.Free;
+  end;
+end;
+
+procedure TestTComparer.TestEquals;
+var
+  Left, Right: TFraction;
+  EC: IEqualityComparer<TFraction>;
+begin
+  EC := TFraction.TComparer.Create;
+
+  Left := TFraction.Create(3, 4);
+  Right := TFraction.Create(3, 4);
+  CheckTrue(EC.Equals(Left, Right), 'Test 1');
+
+  Left := TFraction.Create(3, 4);
+  Right := TFraction.Create(6, 8);
+  CheckTrue(EC.Equals(Left, Right), 'Test 2');
+
+  Left := 7;
+  Right := 7;
+  CheckTrue(EC.Equals(Left, Right), 'Test 3');
+
+  Left := TFraction.Create(5, 6);
+  Right := TFraction.Create(5, 7);
+  CheckFalse(EC.Equals(Left, Right), 'Test 4');
+
+  Left := 8;
+  Right := TFraction.Create(56, 7);
+  CheckTrue(EC.Equals(Left, Right), 'Test 5');
+
+  Left := 8;
+  Right := TFraction.Create(57, 7);
+  CheckFalse(EC.Equals(Left, Right), 'Test 6');
+
+  Left := TFraction.Create(0, 123);
+  Right := TFraction.Create(0, -456);
+  CheckTrue(EC.Equals(Left, Right), 'Test 7');
+end;
+
+procedure TestTComparer.TestGetHashCode;
+var
+  F, F1, F2: TFraction;
+  EC: IEqualityComparer<TFraction>;
+begin
+  EC := TFraction.TComparer.Create;
+
+  F := TFraction.Create(12, 31);
+  CheckEquals(F.Hash, EC.GetHashCode(F), 'Test 1');
+
+  F1 := TFraction.Create(0, 4);
+  F2 := TFraction.Create(0, 27);
+  CheckEquals(F1.Hash, EC.GetHashCode(F2), 'Test 2');
+
+  F1 := 7;
+  F2 := 7;
+  CheckEquals(F1.Hash, EC.GetHashCode(F2), 'Test 3');
+
+  F1 := TFraction.Create(12, 16);
+  F2 := TFraction.Create(24, 32);
+  CheckEquals(F1.Hash, EC.GetHashCode(F2), 'Test 4');
+
+  F1 := TFraction.Create(1, 3);
+  F2 := TFraction.Create(2, 7);
+  CheckNotEquals(F1.Hash, EC.GetHashCode(F2), 'Test 5');
+
+  // Check GetHashCode always returns same hash for same value
+  F := TFraction.Create(137, 23);
+  CheckEquals(EC.GetHashCode(F), EC.GetHashCode(F), 'Test 6');
+end;
+
 initialization
 
 // Register any test cases with the test runner
 RegisterTest(TestTFraction.Suite);
+RegisterTest(TestTComparer.Suite);
 
 end.
 
